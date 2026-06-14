@@ -33,6 +33,7 @@ Perintah lain:
 /help - bantuan`;
 
 export async function POST(req) {
+  let chatId;
   try {
     const body = await req.json();
     const message = body.message;
@@ -41,7 +42,7 @@ export async function POST(req) {
       return NextResponse.json({ ok: true });
     }
 
-    const chatId = message.chat.id;
+    chatId = message.chat.id;
     const text = message.text.trim();
 
     if (OWNER_ID && String(chatId) !== String(OWNER_ID)) {
@@ -134,10 +135,17 @@ export async function POST(req) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error(err);
+    if (chatId) {
+      try {
+        await sendMessage(chatId, `⚠️ Error: ${err.message}`);
+      } catch (e) {
+        console.error('Failed to send error message', e);
+      }
+    }
     return NextResponse.json({ ok: false, error: err.message });
   }
 }
 
 export async function GET() {
   return NextResponse.json({ ok: true, message: 'Telegram webhook is running.' });
-}
+    }
