@@ -121,10 +121,10 @@ export async function POST(req) {
         return NextResponse.json({ ok: true });
       }
 
-      await deleteProduct(id);
-      await sendMessage(chatId, `🗑️ Barang dengan ID ${id} berhasil dihapus (jika ada).`);
+      const result = await deleteProduct(id);
+      await sendMessage(chatId, `🗑️ Hasil hapus ID ${id}:\n<code>${JSON.stringify(result)}</code>`);
       return NextResponse.json({ ok: true });
-    }
+  }
 
     if (text.startsWith('/start') || text.startsWith('/help')) {
       await sendMessage(chatId, HELP_TEXT);
